@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using LocationService.Data;
 using LocationService.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -16,9 +17,9 @@ namespace LocationService.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddLocation(Guid memberId, [FromBody]Location locationRecord)
+        public async Task<IActionResult> AddLocation(Guid memberId, [FromBody]Location locationRecord)
         {
-            this.locationRepository.Add(locationRecord);
+            await this.locationRepository.AddAsync(locationRecord);
 
             return this.Created(
                 $"/locations/{memberId}/{locationRecord.ID}",

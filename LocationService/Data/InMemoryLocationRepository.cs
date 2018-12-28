@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using LocationService.Models;
 
 namespace LocationService.Data
@@ -19,6 +20,11 @@ namespace LocationService.Data
             this.locationsList.Add(location);
 
             return location;
+        }
+
+        public Task<Location> AddAsync(Location location)
+        {
+            throw new NotImplementedException();
         }
 
         public IEnumerable<Location> AllForMember(Guid memberId)

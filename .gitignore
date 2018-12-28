@@ -9,3 +9,4 @@
 /.vs/Micro.LocationService/v15
 /.vs
 /LocationService.Tests/obj
+/LocationService.Tests/bin/Debug/netcoreapp2.1
