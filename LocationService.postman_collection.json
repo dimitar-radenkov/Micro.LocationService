@@ -1,0 +1,91 @@
+{
+	"info": {
+		"_postman_id": "3339e772-bae5-4fbb-8f94-dd9f567bf4dd",
+		"name": "LocationService",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create location",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\t\"id\": \"55bf35ba-deb7-4708-abc2-a21054dbfa13\", \r\n\t\"latitude\": 12.56, \r\n\t\"longitude\": 45.567, \r\n\t\"altitude\": 1200, \r\n\t\"timestamp\" : 1476029596, \r\n\t\"memberId\": \"0edaf3d2-5f5f-4e13-ae27-a7fbea9fccfb\"\r\n}"
+				},
+				"url": {
+					"raw": "https://localhost:44332/api/locations",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "44332",
+					"path": [
+						"api",
+						"locations"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get location for member",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://localhost:44332/api/locations/{{memberId}}",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "44332",
+					"path": [
+						"api",
+						"locations",
+						"{{memberId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get latest for member",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://localhost:44332/api/locations/latest/{{memberId}}",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "44332",
+					"path": [
+						"api",
+						"locations",
+						"latest",
+						"{{memberId}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

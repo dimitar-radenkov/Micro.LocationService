@@ -17,9 +17,7 @@ namespace LocationService.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddLocation(
-            Guid memberId,
-            [FromBody]LocationBindingModel locationBindingModel)
+        public async Task<IActionResult> AddLocation([FromBody]LocationBindingModel locationBindingModel)
         {
             if (!this.ModelState.IsValid)
             {
@@ -33,7 +31,7 @@ namespace LocationService.Controllers
                 locationBindingModel.MemberID);
 
             return this.Created(
-                $"/locations/{memberId}/{location.ID}",
+                $"/locations/{locationBindingModel.MemberID}/{location.ID}",
                 location);
         }
 

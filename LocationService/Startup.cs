@@ -1,4 +1,5 @@
 ﻿using LocationService.Data;
+using LocationService.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -20,11 +21,11 @@ namespace LocationService
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var connectionString = this.Configuration.GetSection("Db.ConnectionString").Value;
+            var connectionString = this.Configuration.GetSection("Db:ConnectionString").Value;
             services.AddDbContext<LocationServiceDbContext>(options => 
                 options.UseSqlServer(connectionString));
 
-            services.AddSingleton<ILocationRepository, InMemoryLocationRepository>();
+            services.AddScoped<ILocationRepository, LocationRepository>();
 
             services.AddCors();
 
@@ -43,6 +44,7 @@ namespace LocationService
                 app.UseHsts();
             }
 
+            app.MigrateDatabase();
             app.UseHttpsRedirection();
             app.UseMvc();
         }
