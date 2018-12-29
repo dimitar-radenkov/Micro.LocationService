@@ -17,25 +17,36 @@ namespace LocationService.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddLocation(Guid memberId, [FromBody]Location locationRecord)
+        public async Task<IActionResult> AddLocation(
+            Guid memberId,
+            [FromBody]LocationBindingModel locationBindingModel)
         {
-            await this.locationRepository.AddAsync(locationRecord);
+            if (!this.ModelState.IsValid)
+            {
+                return this.BadRequest(this.ModelState);
+            }
+
+            var location = await this.locationRepository.AddAsync(
+                locationBindingModel.Latitude,
+                locationBindingModel.Longitude,
+                locationBindingModel.Altitude,
+                locationBindingModel.MemberID);
 
             return this.Created(
-                $"/locations/{memberId}/{locationRecord.ID}",
-                locationRecord);
+                $"/locations/{memberId}/{location.ID}",
+                location);
         }
 
         [HttpGet("{memberId}")]
-        public IActionResult GetLocationsForMember(Guid memberId)
+        public async Task<IActionResult> GetLocationsForMember(Guid memberId)
         {
-            return this.Ok(this.locationRepository.AllForMember(memberId));
+            return this.Ok(await this.locationRepository.AllForMemberAsync(memberId));
         }
 
         [HttpGet("latest/{memberId}")]
-        public IActionResult GetLatestForMember(Guid memberId)
+        public async Task<IActionResult> GetLatestForMember(Guid memberId)
         {
-            return this.Ok(this.locationRepository.GetLatestForMember(memberId));
+            return this.Ok(await this.locationRepository.GetLatestForMemberAsync(memberId));
         }
     }
 }

@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using LocationService.Extensions;
 using LocationService.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace LocationService.Data
 {
@@ -14,34 +17,60 @@ namespace LocationService.Data
             this.db = db;
         }
 
-        public async Task<Location> AddAsync(Location location)
+        public async Task<Location> AddAsync(
+            float latitude, 
+            float longtitude, 
+            float altitude, 
+            Guid memberId)
         {
+            var location = new Location
+            {
+                ID = Guid.NewGuid(),
+                Timestamp = DateTime.UtcNow.ToUnixTime(),
+                Altitude = altitude,
+                Latitude = latitude,
+                Longitude = longtitude,
+                MemberID = memberId,
+            };
+
             await this.db.Locations.AddAsync(location);
+            this.db.SaveChanges();
 
             return location;
         }
 
-        public IEnumerable<Location> AllForMember(Guid memberId)
-        {
-            throw new NotImplementedException();
+        public async Task<IEnumerable<Location>> AllForMemberAsync(Guid memberId)
+        { 
+            return await this.db.Locations
+                .AsNoTracking()
+                .Where(x => x.MemberID == memberId)
+                .ToListAsync(); ;
         }
 
-        public Location Delete(Guid memberId, Guid recordId)
+        public async Task<bool> DeleteAsync(Guid memberId, Guid recordId)
         {
-            throw new NotImplementedException();
+            var result = await this.db.Locations
+                .Where(x => x.MemberID == memberId && x.ID == recordId)
+                .DeleteFromQueryAsync();
+
+            this.db.SaveChanges();
+
+            return result > 0;
         }
 
-        public Location Get(Guid memberId, Guid recordId)
+        public async Task<Location> GetAsync(Guid memberId, Guid recordId)
         {
-            throw new NotImplementedException();
+            return await this.db.Locations
+                .FirstOrDefaultAsync(x => x.MemberID == memberId && x.ID == recordId);
         }
 
-        public Location GetLatestForMember(Guid memberId)
+        public async Task<Location> GetLatestForMemberAsync(Guid memberId)
         {
-            throw new NotImplementedException();
+            return await this.db.Locations
+                .AsNoTracking().LastOrDefaultAsync(x => x.MemberID == memberId);
         }
 
-        public Location Update(Location location)
+        public Task<Location> UpdateAsync(Location location)
         {
             throw new NotImplementedException();
         }

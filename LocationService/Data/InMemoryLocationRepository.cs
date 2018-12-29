@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using LocationService.Extensions;
 using LocationService.Models;
 
 namespace LocationService.Data
@@ -15,46 +16,56 @@ namespace LocationService.Data
             this.locationsList = new List<Location>();
         }
 
-        public Location Add(Location location)
+        public async Task<Location> AddAsync(
+            float latitude, 
+            float longtitude,
+            float altitude,
+            Guid memberId)
         {
-            this.locationsList.Add(location);
+            var location = new Location
+            {
+                ID = Guid.NewGuid(),
+                Timestamp = DateTime.UtcNow.ToUnixTime(),
+                Altitude = altitude,
+                Latitude = latitude,
+                Longitude = longtitude,
+                MemberID = memberId,
+            };
+
+            await Task.Run(() => this.locationsList.Add(location));
 
             return location;
         }
 
-        public Task<Location> AddAsync(Location location)
-        {
-            throw new NotImplementedException();
+        public async Task<IEnumerable<Location>> AllForMemberAsync(Guid memberId)
+        { 
+            return await Task.Run(() => this.locationsList.Where(x => x.MemberID == memberId));
         }
 
-        public IEnumerable<Location> AllForMember(Guid memberId)
+        public async Task<bool> DeleteAsync(Guid memberId, Guid recordId)
         {
-            return this.locationsList.Where(x => x.MemberID == memberId);
-        }
-
-        public Location Delete(Guid memberId, Guid recordId)
-        {
-            var location = this.locationsList
-                .FirstOrDefault(l => l.MemberID == memberId && l.ID == recordId);
+            var location = await Task.Run(() => 
+                this.locationsList.FirstOrDefault(l => l.MemberID == memberId && l.ID == recordId));
 
             if (location != null)
             {
                 this.locationsList.Remove(location);
-                return location;
+                return true;
             }
 
-            return null;
+            return false;
         }
 
-        public Location Get(Guid memberId, Guid recordId)
+        public async Task<Location> GetAsync(Guid memberId, Guid recordId)
         {
-            return this.locationsList
-                .FirstOrDefault(l => l.MemberID == memberId && l.ID == recordId);
+            return await Task.Run(() => 
+                this.locationsList.FirstOrDefault(l => l.MemberID == memberId && l.ID == recordId));
         }
 
-        public Location GetLatestForMember(Guid memberId)
+        public async Task<Location> GetLatestForMemberAsync(Guid memberId)
         {
-            return this.locationsList.LastOrDefault(l => l.MemberID == memberId);
+            return await Task.Run(() => 
+                this.locationsList.LastOrDefault(l => l.MemberID == memberId));
         }
 
         public Location Update(Location location)
@@ -71,6 +82,11 @@ namespace LocationService.Data
             this.locationsList[index] = location;
 
             return location;
+        }
+
+        public Task<Location> UpdateAsync(Location location)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -12,7 +12,7 @@ namespace LocationService
     {
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            this.Configuration = configuration;
         }
 
         public IConfiguration Configuration { get; }
@@ -20,7 +20,7 @@ namespace LocationService
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var connectionString = Configuration.GetSection("Db.ConnectionString").Value;
+            var connectionString = this.Configuration.GetSection("Db.ConnectionString").Value;
             services.AddDbContext<LocationServiceDbContext>(options => 
                 options.UseSqlServer(connectionString));
 

@@ -7,11 +7,20 @@ namespace LocationService.Data
 {
     public interface ILocationRepository
     {
-        Task<Location> AddAsync(Location location);
-        Location Update(Location location);
-        Location Get(Guid memberId, Guid recordId);
-        Location Delete(Guid memberId, Guid recordId);
-        Location GetLatestForMember(Guid memberId);
-        IEnumerable<Location> AllForMember(Guid memberId);
+        Task<Location> AddAsync(
+            float latitude,
+            float longtitude,
+            float altitude,
+            Guid memberId);
+
+        Task<Location> UpdateAsync(Location location);
+
+        Task<Location> GetAsync(Guid memberId, Guid recordId);
+
+        Task<bool> DeleteAsync(Guid memberId, Guid recordId);
+
+        Task<Location> GetLatestForMemberAsync(Guid memberId);
+
+        Task<IEnumerable<Location>> AllForMemberAsync(Guid memberId);
     }
 }
